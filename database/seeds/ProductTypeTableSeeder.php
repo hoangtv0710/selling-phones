@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use App\Models\Category; 
 
-class UsersTableSeeder extends Seeder
+class ProductTypeTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,18 +14,13 @@ class UsersTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
         
-        $limit = 10;
-        
-        $min = 1;
-        $max = 4;
+        $limit = 3;
 
         for ($i = 0; $i < $limit; $i++) {
-            DB::table('users')->insert([
+            DB::table('product_types')->insert([
+            	'cate_id' => Category::all()->random()->id,
                 'name' => $faker->name(),
-                'email' => $faker->email(),
-                'password' => Hash::make('123456'),
                 'status' => 1,
-                'role' => rand($min, $max),
             ]);
         }
     }

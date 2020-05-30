@@ -57,7 +57,9 @@
                                         <b>Đơn hàng của bạn #</b> 
                                         <a href="#" style="color:#ed2324;font-weight:bold;text-decoration:none" target="_blank">{{ $order->code_order }}
                                         </a>
-                                        <span style="font-size:12px">{{ $order->created_at }}</span>
+                                        <span style="font-size:12px">{{ $order->created_at }}</span><br>
+                                        <b>Tổng tiền cần thanh toán</b> 
+                                        <span style="font-size:12px">{{ number_format($order->total_price) }} VNĐ</span>
                                     </td>
                                 </tr>
                                 @foreach($order_detail as $item)
@@ -81,28 +83,18 @@
                                                             </a>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                     <tr>
                                                         <td align="left" valign="top" style="width:120px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;padding-left:15px;padding-right:10px;line-height:20px;padding-bottom:5px"> 
-                                                            <b>Tên Shop</b>
-                                                        </td>
-                                                        <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-bottom:5px">:</td>
-                                                        <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:10px;padding-bottom:5px"> 
-                                                            <a href="#" style="color:#115fff;text-decoration:none" target="_blank">
-                                                                ELECTRO STORE
-                                                            </a>
-                                                            - 0374969474
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td align="left" valign="top" style="width:120px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:15px;padding-right:10px;padding-bottom:5px"> 
-                                                            <b>Tổng thanh toán</b>
+                                                            <b>Số lượng</b>
                                                         </td>
                                                         <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-bottom:5px">:</td>
                                                         <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:10px;padding-bottom:5px">
-                                                            {{ number_format($item->price) }} VNĐ
+                                                                <a href="#" style="color:#115fff;text-decoration:none" target="_blank">
+                                                                {{ $item->quantity }}
+                                                            </a>
                                                         </td>
                                                     </tr>
-                                                    <tr>
+                                                     <tr>
                                                         <td align="left" valign="top" style="width:120px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:15px;padding-right:10px;padding-bottom:5px"> 
                                                             <b>Người nhận</b>
                                                         </td>
@@ -113,17 +105,37 @@
                                                             {{ $order->address }}
                                                         </td>
                                                     </tr>
+                                                    @if($order->message != "")
+                                                        <tr>
+                                                            <td align="left" valign="top" style="width:120px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;padding-left:15px;padding-right:10px;line-height:20px;padding-bottom:5px"> 
+                                                                <b>Ghi chú</b>
+                                                            </td>
+                                                            <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-bottom:5px">:</td>
+                                                            <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:10px;padding-bottom:5px">
+                                                                    <a href="#" style="color:#115fff;text-decoration:none" target="_blank">
+                                                                    {{ $order->message }}
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    @endif
+                                                    <tr>
+                                                        <td align="left" valign="top" style="width:120px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:15px;padding-right:10px;padding-bottom:5px"> 
+                                                            <b>Tổng thanh toán</b>
+                                                        </td>
+                                                        <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-bottom:5px">:</td>
+                                                        <td align="left" valign="top" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#666666;line-height:20px;padding-left:10px;padding-bottom:5px">
+                                                            {{ number_format($item->price*$item->quantity) }} VNĐ
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </td>
                                     </tr>
                                 @endforeach
                                 <tr>
-                                    <td colspan="2" align="center" valign="top" style="padding-top:20px;padding-bottom:20px;border-bottom:1px solid #ebebeb">
-                                        <a href="#" style="border:0px" target="_blank"> 
-                                            <img src="https://i.imgur.com/f92hL68.jpg" height="29" width="191" alt="Chi tiết đơn hàng" style="border:0px"> 
-                                        </a>
-                                    </td>
+                                    @if($order->message != "")
+                                        <p><b>Ghi chú</b>:{{ $order->message }}</p>
+                                    @endif
                                 </tr>
                             </tbody>
                         </table>
@@ -139,7 +151,7 @@
                                         <br> Nếu có bất kỳ thắc mắc hay cần giúp đỡ, Bạn vui lòng ghé thăm 
                                         <b style="font-family:Arial,Helvetica,sans-serif;font-size:13px;text-decoration:none;font-weight:bold">Trung tâm trợ giúp</b> của chúng tôi tại địa chỉ: 
                                         <a href="#" style="font-family:Arial,Helvetica,sans-serif;font-size:13px;color:#0066cc;text-decoration:none;font-weight:bold" target="_blank">
-                                            help.electrostore.vn
+                                            help.electrostore.vn - 0374969474
                                         </a>
                                     </td>
                                 </tr>

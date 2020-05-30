@@ -7,7 +7,7 @@ $(document).ready(function(){
     $('.qty').blur(function(){
         let rowId = $(this).data('id');
         $.ajax({
-            url : 'cart_detail/'+rowId,
+            url : 'cart/cart_detail/'+rowId,
             type : 'put',
             dataType : 'json',
             data : {
@@ -28,7 +28,7 @@ $(document).ready(function(){
         let rowId = $(this).data('id');
         $('.delCart').click(function(){
             $.ajax({
-                url : 'cart_detail/'+rowId,
+                url : 'cart/cart_detail/'+rowId,
                 type : 'delete',
                 dataType : 'json',
                 success : function($result){
