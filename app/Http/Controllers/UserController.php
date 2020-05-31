@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\User;
+use App\Models\ResetPassword;
 use Hash;
 use Auth;
 use Session;
 use Mail;
 use Carbon\Carbon;
 use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdatePasswordRequest;
 
 class UserController extends Controller
 {
@@ -40,7 +43,7 @@ class UserController extends Controller
                 $message->to($email, 'Verify Email')->subject('Xác nhận email');
             });
             
-            return back()->with('thongbao','Đăng ký tài khoản thành công, vui lòng check mail để xác nhận tài khoản');
+            return back()->with('thongbao','Đăng ký tài khoản thành công, vui lòng kiểm tra email để xác nhận tài khoản');
         }
     }
 
@@ -53,10 +56,6 @@ class UserController extends Controller
             'code_active' => $code_active,
             'id' => $id,
         ])->first();
-
-        print('<pre>');
-        print_r($verifyEmail);
-        print('</pre>');
 
         if(!$verifyEmail){
             return redirect('/')->with('error', 'Đường dẫn lỗi, hoặc không tồn tại vui lòng kiểm tra lại');
@@ -85,6 +84,52 @@ class UserController extends Controller
         }
     }
 
+    //reset password
+    public function forgetPassword(Request $request)
+    {
+        $result = User::where('email', $request->email)->first();
+        $email = $request->email;
+        if($result){
+            $resetPassword = ResetPassword::firstOrCreate(['email'=>$request->email, 'token'=>Str::random(60)]);
+
+            $token = ResetPassword::where('email', $request->email)->first();
+            // $url = route('reset_password')."/".$token->token; //send it to email
+            $url = route('reset_password', ['token' => $token->token]);
+            $data = [
+                'route' => $url
+            ];
+            Mail::send('mail.reset_password', $data, function ($message) use ($email) {
+                $message->to($email, 'Reset Password')->subject('Đổi mật khẩu');
+            });
+            return redirect('/')->with('thongbao', 'Vui lòng kiểm tra email của bạn để xác minh');
+        } elseif ($email == "") {
+             return back()->with('error', 'Vui lòng nhập email!');
+        } else {
+            return back()->with('error', 'Email không tồn tại, vui lòng kiểm tra lại!');
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $result = ResetPassword::where('token', $request->token)->first();
+
+        if($result){
+            $data['info'] = $result->token;
+            return view('client.pages.reset_password', $data);
+        } else {
+            return redirect('/')->with('error', 'Đường dẫn lỗi, hoặc không tồn tại vui lòng kiểm tra lại');
+        }
+    }
+
+    public function newPassword(UpdatePasswordRequest $request)
+    {
+        $result = ResetPassword::where('token', $request->token)->first();
+        User::where('email', $result->email)->update(['password'=>bcrypt($request->password)]);
+        ResetPassword::where('token', $request->token)->delete();
+        return redirect('/')->with('thongbao', 'Cập nhập mật khẩu thành công');
+    }
+    //end reset password
+
     public function logout(Request $request)
     {
         if(Auth::check()){
@@ -94,21 +139,8 @@ class UserController extends Controller
         }
     }
 
-    public function updatePassword(Request $request)
+    public function updatePassword(UpdatePasswordRequest $request)
     {
-        $this->validate($request,
-            [
-                'password' => 'required|min:6|max:255',
-                'confirm_password' => 'required|same:password',
-            ],
-            [
-                'password.required' => 'Mật khẩu không được để trống',
-                'password.min' => 'Mật khẩu phải trên 6 ký tự',
-                'password.max' => 'Mật khẩu không được nhiều hơn 255 ký tự',
-                'confirm_password.required' => 'Vui lòng xác minh lại mật khẩu',
-                'confirm_password.same' => 'Mật khẩu không trùng',
-            ]
-        );
         $user  = User::find(Auth::user()->id);
         $user->password = Hash::make($request->password);
         $user->save();

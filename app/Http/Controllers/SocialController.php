@@ -21,11 +21,7 @@ class SocialController extends Controller
     
         auth()->login($user);
     
-        if($user->status == 1){
-            return redirect()->to('/');
-        } else {
-            return redirect('/')->with('error', 'Tài khoản của bạn chưa được kích hoạt');
-        }
+        return redirect('/')->with('thongbao', 'Đăng nhập bằng google thành công');
     }
 
     public function createUser($getInfo,$provider){
@@ -37,7 +33,8 @@ class SocialController extends Controller
                 'email'    => $getInfo->email,
                 'avatar'   => $getInfo->avatar,
                 'provider' => $provider,
-                'provider_id' => $getInfo->id
+                'provider_id' => $getInfo->id,
+                'status' => 1
             ]);
         }
         return $user;
