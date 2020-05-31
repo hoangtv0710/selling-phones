@@ -7,45 +7,67 @@ use App\Models\User;
 use Hash;
 use Auth;
 use Session;
+use Mail;
+use Carbon\Carbon;
 use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
     public function register(StoreUserRequest $request)
     {
-        $data = $request->all();
-        $data['password'] = Hash::make($request->password);
-        $user = User::create($data);
-        Auth::login($user); // đăng nhập luôn sau khi đăng ký
-        return back()->with('thongbao','Đăng ký tài khoản thành công');
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        // Auth::login($user);  đăng nhập luôn sau khi đăng ký
+
+        // verify email
+        if ($user->id) {
+            $email = $user->email;
+
+            $code_active = bcrypt(md5(time().$email));
+            $url = route('verify_email', ['id' => $user->id, 'code_active' => $code_active]);
+
+            $user->code_active = $code_active;
+            $user->save();
+
+            $data = [
+                'route' => $url
+            ];
+
+            Mail::send('mail.verify_email', $data, function ($message) use ($email) {
+                $message->to($email, 'Verify Email')->subject('Xác nhận email');
+            });
+            
+            return back()->with('thongbao','Đăng ký tài khoản thành công, vui lòng check mail để xác nhận tài khoản');
+        }
     }
+
+    public function verifyEmail(Request $request)
+    {
+        $code_active = $request->code_active;
+        $id = $request->id;
+
+        $verifyEmail = User::where([
+            'code_active' => $code_active,
+            'id' => $id,
+        ])->first();
+
+        print('<pre>');
+        print_r($verifyEmail);
+        print('</pre>');
+
+        if(!$verifyEmail){
+            return redirect('/')->with('error', 'Đường dẫn lỗi, hoặc không tồn tại vui lòng kiểm tra lại');
+        }
+        $verifyEmail->status = 1;
+        $today = Carbon::now('Asia/Ho_Chi_Minh');
+        $verifyEmail->email_verified_at = $today;
+        $verifyEmail->save();
+        return redirect('/')->with('thongbao', 'Xác minh tài khoản thành công');
+    }
+    // end verify email
 
     public function login(Request $request)
     {
@@ -88,7 +110,7 @@ class UserController extends Controller
             ]
         );
         $user  = User::find(Auth::user()->id);
-        $user->password =Hash::make($request->password);
+        $user->password = Hash::make($request->password);
         $user->save();
         return back()->with('thongbao','Cập nhật mật khẩu thành công');
     }

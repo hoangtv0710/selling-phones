@@ -10,9 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-//admin
 Route::post('admin/login', 'AdminController@loginAdmin')->name('admin.login');
 Route::view('admin/login', 'admin.pages.login')->name('login.admin');
 Route::get('admin/logout', 'AdminController@logoutAdmin')->name('admin.logout');
@@ -39,6 +36,7 @@ Route::get('/auth/redirect/{provider}', 'SocialController@redirect');
 Route::get('/callback/{provider}', 'SocialController@callback');
 
 Route::post('register', 'UserController@register')->name('register');
+Route::get('verify_email', 'UserController@verifyEmail')->name('verify_email');
 Route::post('login', 'UserController@login')->name('login');
 Route::get('logout', 'UserController@logout')->name('logout');
 
