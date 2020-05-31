@@ -37,7 +37,15 @@ Route::get('/callback/{provider}', 'SocialController@callback');
 
 Route::post('register', 'UserController@register')->name('register');
 Route::get('verify_email', 'UserController@verifyEmail')->name('verify_email');
+
 Route::post('login', 'UserController@login')->name('login');
+
+//reset password
+Route::view('forget_password', 'client.pages.forget_password')->name('forget_password');
+Route::post('post_forget_password', 'UserController@forgetPassword')->name('post_forget_password');
+Route::get('reset_password', 'UserController@resetPassword')->name('reset_password');
+Route::post('new_password', 'UserController@newPassword')->name('new_password');
+
 Route::get('logout', 'UserController@logout')->name('logout');
 
 Route::post('update-password', 'UserController@updatePassword')->name('update_password');

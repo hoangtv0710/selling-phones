@@ -14,7 +14,7 @@
                                 <i class="fas fa-map-marker mr-2"></i>Select Location</a>
                         </li>
                         <li class="text-center border-right text-white">
-                            <a href="#" data-toggle="modal" data-target="#exampleModal" class="text-white">
+                            <a data-toggle="modal" data-target="#exampleModal" class="text-white">
                                 <i class="fas fa-truck mr-2"></i>Track Order</a>
                         </li>
                         <li class="text-center border-right text-white">
@@ -170,6 +170,9 @@
                                 <label class="custom-control-label" for="customControlAutosizing">Nhớ mật khẩu?</label>
                             </div>
                         </div>
+                        <p class="text-center dont-do mt-3">Bạn quên mật khẩu? Vui lòng bấm
+                            <a href="{{ route('forget_password') }}">vào đây</a>
+                        </p>
                         <p class="text-center dont-do mt-3">Bạn chưa có tài khoản ?
                             <a href="#" data-toggle="modal" data-target="#exampleModal2">
                                 Đăng ký</a>
