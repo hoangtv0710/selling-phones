@@ -158,7 +158,7 @@
                     </form>
                         <div class="row mb-3">
                             <div class="col-md-6">
-                                <a href="" class="btn btn-primary pt-2 pb-2 rounded-0">Đăng nhập bằng Facebook</a>
+                                <a href="{{ url('/auth/redirect/github') }}" class="btn btn-dark pt-2 pb-2 rounded-0">Đăng nhập bằng Github</a>
                             </div>
                             <div class="col-md-6">
                                 <a href="{{ url('/auth/redirect/google') }}" class="btn btn-danger pt-2 pb-2 rounded-0">Đăng nhập bằng Google </a>

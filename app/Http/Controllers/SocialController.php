@@ -20,7 +20,9 @@ class SocialController extends Controller
         $user = $this->createUser($getInfo,$provider);
     
         auth()->login($user);
-    
+        if ($user->provider == 'github'){
+            return redirect('/')->with('thongbao', 'Đăng nhập bằng github thành công');
+        }
         return redirect('/')->with('thongbao', 'Đăng nhập bằng google thành công');
     }
 

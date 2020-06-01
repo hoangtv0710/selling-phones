@@ -46,4 +46,10 @@ return [
         'redirect' => env('GOOGLE_APP_CALLBACK_URL'),
     ],
 
+    'github' => [
+        'client_id' => env('GITHUB_APP_ID'),
+        'client_secret' => env('GITHUB_APP_SECRET'),
+        'redirect' => env('GITHUB_APP_CALLBACK_URL'),
+      ], 
+
 ];
