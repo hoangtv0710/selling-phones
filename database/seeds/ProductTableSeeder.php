@@ -14,7 +14,7 @@ class ProductTableSeeder extends Seeder
     {
         $faker = Faker\Factory::create();
         
-        $limit = 5;
+        $limit = 15;
 
         for ($i = 0; $i < $limit; $i++) {
             DB::table('products')->insert([

@@ -66,7 +66,7 @@
               </tbody>
             </table>
             <div class="d-flex justify-content-end">
-              {{ $product->links() }}
+                {{ $product->links() }}
             </div>
           </div>
         </div>
@@ -165,6 +165,9 @@
 @section('script')
     <script>
         CKEDITOR.replace('editor');
+        <?php if (isset($cate) || isset($key)): ?>
+            $('.result').css('display', 'none');
+        <?php endif ?>
     </script>
     <script src="assets/admin/js/ud_product.js"></script>
 @endsection

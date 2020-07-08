@@ -128,7 +128,7 @@ $(document).ready(function(){
     //delete
     $('.delete').click(function(){
         let id = $(this).data('id');
-        $('.del').click(function(){
+        $('.delProduct').click(function(){
             $.ajax({
                 url : 'admin/product/'+id,
                 dataType : 'json',

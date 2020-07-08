@@ -21,8 +21,8 @@ class ProductController extends Controller
 
     public function index()
     {
-        $product = Product::paginate(10);
-        return view('admin.pages.product.list', compact('product'));
+        $product = Product::where('status',1)->paginate(10);
+        return view('admin.pages.product.list',compact('product'));
     }
 
   
@@ -94,3 +94,5 @@ class ProductController extends Controller
         return response()->json(['success' => 'Xoá thành công'], 200);
     }
 }
+
+
